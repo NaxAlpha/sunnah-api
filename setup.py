@@ -56,11 +56,11 @@ setup(
     # In this case, 'data_file' will be installed into '<sys.prefix>/my_data'
     # data_files=[('my_data', ['data/data_file'])],  # Optional
 
-    entry_points={  # Optional
-        'console_scripts': [
-            'sunnah_api=sunnah_api:main',
-        ],
-    },
+    # entry_points={  # Optional
+    #     'console_scripts': [
+    #         'sunnah_api=sunnah_api:main',
+    #     ],
+    # },
     project_urls={  
         'Bug Reports': 'https://github.com/NaxAlpha/sunnah-api/issues',
         'Source': 'https://github.com/NaxAlpha/sunnah-api',
