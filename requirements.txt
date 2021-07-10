@@ -1,3 +1,4 @@
 orjson
 desert
 marshmallow_enum
+marshmallow_union

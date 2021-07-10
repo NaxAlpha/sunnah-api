@@ -79,7 +79,7 @@ class BookInfo(_Lang):
 
 @dataclass
 class Book:
-    bookNumber: int
+    bookNumber: Union[int, str]
     book: List[BookInfo]
     hadithStartNumber: int
     hadithEndNumber: int
