@@ -1,4 +1,5 @@
-from typing import Dict, Type
+from time import sleep
+from typing import Dict, Type, List
 from http.client import HTTPSConnection
 
 import orjson
@@ -6,20 +7,23 @@ import desert
 from marshmallow import Schema
 
 from .base import (
+    Chapter,
     CollectionGroup,
     BookGroup,
     ChapterGroup,
     Collection,
     Book,
+    Hadith,
     HadithGroup,
 )
 
 
 class ApiAdaptor:
-    def __init__(self, api_key):
+    def __init__(self, api_key, wait_between_all_requests=0.5):
         self.key = api_key
         self._schemas: Dict[Type, Schema] = dict()
         self.conn = HTTPSConnection("api.sunnah.com")
+        self.wait = wait_between_all_requests
 
     def _get_response(self, endpoint):
         self.conn.request("GET", endpoint, headers={"x-api-key": self.key})
@@ -33,6 +37,25 @@ class ApiAdaptor:
         schema = self._schemas[target_type]
         obj = self._get_response(endpoint.format(*args, **kwargs))
         return schema.load(obj)
+
+    def _repeated_response(self, paged_func, *args, **kwargs):
+        output = []
+        page = 1
+        while True:
+            out = paged_func(*args, page=page, **kwargs)
+            output += out.data
+            if out.next is None:
+                break
+            sleep(self.wait)
+            page = out.next
+        return output
+
+    def get_all_collections(
+        self,
+    ) -> List[Collection]:
+        return self._repeated_response(
+            self.get_collections,
+        )
 
     def get_collections(
         self,
@@ -53,6 +76,15 @@ class ApiAdaptor:
         return self._formated_response(
             Collection,
             "/v1/collections/{collection_name}",
+            collection_name=collection_name,
+        )
+
+    def get_all_books(
+        self,
+        collection_name: str,
+    ) -> List[Book]:
+        return self._repeated_response(
+            self.get_books,
             collection_name=collection_name,
         )
 
@@ -82,6 +114,17 @@ class ApiAdaptor:
             book_number=book_number,
         )
 
+    def get_all_chapters(
+        self,
+        collection_name: str,
+        book_number: int,
+    ) -> List[Chapter]:
+        return self._repeated_response(
+            self.get_chapters,
+            collection_name=collection_name,
+            book_number=book_number,
+        )
+
     def get_chapters(
         self,
         collection_name: str,
@@ -96,6 +139,17 @@ class ApiAdaptor:
             book_number=book_number,
             page=page,
             limit=limit,
+        )
+
+    def get_all_hadith(
+        self,
+        collection_name: str,
+        book_number: int,
+    ) -> List[Hadith]:
+        return self._repeated_response(
+            self.get_hadiths,
+            collection_name=collection_name,
+            book_number=book_number,
         )
 
     def get_hadiths(
@@ -113,5 +167,3 @@ class ApiAdaptor:
             page=page,
             limit=limit,
         )
-
-
