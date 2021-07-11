@@ -137,8 +137,8 @@ class HadithGrade:
 
 @dataclass
 class HadithInfo(_Lang):
-    chapterNumber: int
-    chapterTitle: str
+    chapterNumber: Union[None, str]
+    chapterTitle: Union[None, str]
     urn: int
     body: str
     grades: List[HadithGrade]
@@ -147,9 +147,9 @@ class HadithInfo(_Lang):
 @dataclass
 class Hadith:
     collection: str
-    bookNumber: int
+    bookNumber: Union[int, str]
     chapterId: float
-    hadithNumber: int
+    hadithNumber: Union[int, str]
     hadith: List[HadithInfo]
 
     @cached_property

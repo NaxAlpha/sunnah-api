@@ -8,7 +8,7 @@ requirements_txt = (here / 'requirements.txt').read_text(encoding='utf-8')
 
 setup(
     name='sunnah-api',
-    version='0.2.0',
+    version='0.3.0',
     description='Exposes Sunnah.com API as clean & typed dataclass objects',
     long_description=long_description,
     long_description_content_type='text/markdown',

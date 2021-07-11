@@ -18,6 +18,10 @@ from .base import (
 )
 
 
+class ApiError(Exception):
+    pass
+
+
 class ApiAdaptor:
     def __init__(self, api_key, wait_between_all_requests=0.5):
         self.key = api_key
@@ -36,6 +40,8 @@ class ApiAdaptor:
             self._schemas[target_type] = desert.schema(target_type)
         schema = self._schemas[target_type]
         obj = self._get_response(endpoint.format(*args, **kwargs))
+        if 'error' in obj or 'message' in obj:
+            raise ApiError(obj)
         return schema.load(obj)
 
     def _repeated_response(self, paged_func, *args, **kwargs):

@@ -1,4 +1,7 @@
-from .adaptor import ApiAdaptor
+from .adaptor import (
+    ApiAdaptor,
+    ApiError,
+)
 from .base import (
     CollectionGroup,
     BookGroup,
